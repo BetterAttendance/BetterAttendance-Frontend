@@ -1,4 +1,4 @@
-import { getRandomInteger } from "../../backend/utils/questionUtils";
+import { getRandomInteger } from "../../utils/questionUtils";
 
 const getQuestion = async () => {
   // We only want the number of questions to be no less than 3
