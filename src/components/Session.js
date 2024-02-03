@@ -31,7 +31,8 @@ const Session = () => {
         } else {
           socket.emit("user-joined", sessionID);
           console.log("You have joined a session");
-          setJoinedSession(true);
+          //  setJoinedSession(true);
+          router.push(`/join/${sessionID}`);    // Redirect to the session page with the session ID
         }
 
         if (DEBUG) {
@@ -48,7 +49,8 @@ const Session = () => {
         socket.emit('new-client', username)
         socket.emit("create-session");
         console.log("You have created a session");
-        setJoinedSession(true);
+        //  setJoinedSession(true);
+        router.push(`/create/${sessionID}`);    // Redirect to the session page with the session ID
 
         if (DEBUG) {
           console.log("handleUserName and handleCreateSession reached")
