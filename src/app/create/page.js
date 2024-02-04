@@ -49,14 +49,34 @@ const Create = () => {
   }, [router]);
 
   return (
-    <>
+    <div className="m-auto w-3/5 border-4 border-solid p-2.5 text-center">
+      <h1 className="main-header" style={{fontSize: '30px'}}>Welcome to BetterAttendance</h1>
       <h2>Please enter your name</h2>
-      <input type="text" value={username} onChange={handleUsernameChange} />
+      <input type="text" value={username} onChange={handleUsernameChange} 
+        style={{
+          border: '1px solid #ccc',
+          padding: '10px',
+          margin: '5px 0',
+          width: '360px',
+          boxSizing: 'border-box',
+          fontSize: '16px',
+        }}
+      />
 
-      <button type="button" onClick={handleCreateSession}>
-        Create a session
-      </button>
-    </>
+      <form>
+        <button type="button" onClick={handleCreateSession}
+        style={{
+          border: '1px solid #ccc',
+          padding: '10px 20px',
+          margin: '10px',
+          backgroundColor: '#fff',
+          fontSize: '16px',
+          cursor: 'pointer',
+        }}>
+          Create a session
+        </button>
+      </form>
+    </div>
   );
 };
 
