@@ -32,7 +32,7 @@ const Session = () => {
           socket.emit("user-joined", sessionID);
           console.log("You have joined a session");
           //  setJoinedSession(true);
-          router.push(`/sessions/${sessionID}`);    // Redirect to the session page with the session ID
+          router.push(`/sessions/${sessionID}?name=${username}`);    // Redirect to the session page with the session ID
         }
 
         if (DEBUG) {
