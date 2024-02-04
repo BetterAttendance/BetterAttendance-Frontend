@@ -32,31 +32,12 @@ const Session = () => {
           socket.emit("user-joined", sessionID);
           console.log("You have joined a session");
           //  setJoinedSession(true);
-          router.push(`/sessions/${sessionID}`);    // Redirect to the session page with the session ID
+          router.push(`/sessions/${sessionID}?name=${username}`);    // Redirect to the session page with the session ID
         }
 
         if (DEBUG) {
           console.log("handleUserName and handleJoinSession reached") 
-      }
-    }
-
-    };
-
-    const handleCreateSession = () => {
-      if (username == "") {
-        window.alert("Please enter your name before you continue.")
-      } else {
-        socket.emit('new-client', username)
-        socket.emit("create-session");
-        console.log("You have created a session");
-        //  setJoinedSession(true);
-        router.push(`/create/${sessionID}`);    // Redirect to the session page with the session ID
-
-        if (DEBUG) {
-          console.log("handleUserName and handleCreateSession reached")
-        }
-    }
-
+      }}
     };
 
     const handleSessionIDChange = (event) => {
@@ -144,18 +125,6 @@ const Session = () => {
                   cursor: 'pointer',
                 }}>
                 Join a session
-              </button>
-
-              <button type="button" className="create-session" onClick={handleCreateSession}
-                style={{
-                  border: '1px solid #ccc',
-                  padding: '10px 20px',
-                  margin: '10px',
-                  backgroundColor: '#fff',
-                  fontSize: '16px',
-                  cursor: 'pointer',
-                }}>
-                Create a session
               </button>
             </form>
           </div>

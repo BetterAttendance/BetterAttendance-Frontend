@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import io from "socket.io-client";
 import Board from '@/components/Board';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 
 const socket = io("http://localhost:3333");
 
@@ -11,7 +11,7 @@ const DEBUG = true;
 
 const Session = () => {
     const [username, setUsername] = useState("");
-    const [sessionID, setSessionID] = useState("");
+    const { sessionID } = useParams();
     const [joinedSession, setJoinedSession] = useState(false);
     const router = useRouter();
 
@@ -32,31 +32,12 @@ const Session = () => {
           socket.emit("user-joined", sessionID);
           console.log("You have joined a session");
           //  setJoinedSession(true);
-          router.push(`/sessions/${sessionID}`);    // Redirect to the session page with the session ID
+          router.push(`/sessions/${sessionID}?name=${username}`);    // Redirect to the session page with the session ID
         }
 
         if (DEBUG) {
           console.log("handleUserName and handleJoinSession reached") 
-      }
-    }
-
-    };
-
-    const handleCreateSession = () => {
-      if (username == "") {
-        window.alert("Please enter your name before you continue.")
-      } else {
-        socket.emit('new-client', username)
-        socket.emit("create-session");
-        console.log("You have created a session");
-        //  setJoinedSession(true);
-        router.push(`/create/${sessionID}`);    // Redirect to the session page with the session ID
-
-        if (DEBUG) {
-          console.log("handleUserName and handleCreateSession reached")
-        }
-    }
-
+      }}
     };
 
     const handleSessionIDChange = (event) => {
@@ -120,20 +101,6 @@ const Session = () => {
             />
 
             <form>
-              <h2>Please enter the room session number</h2>
-              <input
-                type="text" value={sessionID} onChange={handleSessionIDChange}
-                style={{
-                  border: '1px solid #ccc',
-                  padding: '10px',
-                  margin: '5px 0',
-                  width: '360px',
-                  boxSizing: 'border-box',
-                  fontSize: '16px',
-                }}
-              />
-              <br/><br/>
-
               <button type="button" className="submit" onClick={handleJoinRequest}
                 style={{
                   border: '1px solid #ccc',
@@ -144,18 +111,6 @@ const Session = () => {
                   cursor: 'pointer',
                 }}>
                 Join a session
-              </button>
-
-              <button type="button" className="create-session" onClick={handleCreateSession}
-                style={{
-                  border: '1px solid #ccc',
-                  padding: '10px 20px',
-                  margin: '10px',
-                  backgroundColor: '#fff',
-                  fontSize: '16px',
-                  cursor: 'pointer',
-                }}>
-                Create a session
               </button>
             </form>
           </div>
