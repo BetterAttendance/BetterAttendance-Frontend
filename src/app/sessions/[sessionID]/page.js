@@ -1,11 +1,19 @@
-import { useRouter } from 'next/router';
+"use client"
+
+// Router must be imported from next/navigation if placed in app folder
+import { useRouter, useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 const DEBUG = true;
 
 const JoinSession = () => {
   const router = useRouter();
-  const { sessionID } = router.query;
+  const { sessionID } = useParams();
+
+  if (DEBUG) {
+    console.log('sessionID:', sessionID);
+  }
+
   const [host, setHost] = useState('');
 
   const handleReturnToMainPage = () => {
