@@ -39,14 +39,6 @@ const Session = () => {
     }}
   };
 
-  const handleSessionIDChange = (event) => {
-    setSessionID(event.target.value);
-    
-    if (DEBUG) {
-      console.log("handleSessionIDChange reached")
-    }
-  };
-
   useEffect(() => {  
     socket.on("connect", () => {
       console.log("Connected to server");
@@ -56,15 +48,6 @@ const Session = () => {
       console.log(`${userName} has joined the room session`);
       setUsername(userName);
       setJoinedSession(true);
-    });
-
-    socket.on("session-created", (response) => {
-      if (response && response.sessionId) {
-        console.log(`Session created with ID: ${response.sessionId}`);
-        router.push(`/${response.sessionId}`);
-      } else {
-        console.log("Session creation failed");
-      }
     });
   
     /* Disconnect when the client leaves their page 
