@@ -54,7 +54,6 @@ const Session = () => {
       socket.on("user-joined", (userName) => {
         console.log(`${userName} has joined the room session`);
         setUsername(userName);
-        setJoinedSession(true);
       });
 
       socket.on("session-created", (response) => {
