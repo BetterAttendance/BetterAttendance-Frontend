@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import io from "socket.io-client";
-import Board from '@/components/Board';
 import { useRouter, useParams } from 'next/navigation';
 
 const socket = io("http://localhost:3333");
@@ -12,7 +11,6 @@ const DEBUG = true;
 const Session = () => {
   const [username, setUsername] = useState("");
   const { sessionID } = useParams();
-  const [joinedSession, setJoinedSession] = useState(false);
   const router = useRouter();
 
   const handleUsernameChange = (event) => {

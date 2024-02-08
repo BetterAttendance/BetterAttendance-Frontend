@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import io from "socket.io-client";
-import Board from '@/components/Board';
 import { useRouter } from 'next/navigation';
 
 const socket = io("http://localhost:3333");
