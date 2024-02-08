@@ -55,15 +55,6 @@ const Session = () => {
         console.log(`${userName} has joined the room session`);
         setUsername(userName);
       });
-
-      socket.on("session-created", (response) => {
-        if (response && response.sessionId) {
-          console.log(`Session created with ID: ${response.sessionId}`);
-          router.push(`/${response.sessionId}`);
-        } else {
-          console.log("Session creation failed");
-        }
-      });
   
       /* Disconnect when the client leaves their page 
         By using "beforeunload" event */
