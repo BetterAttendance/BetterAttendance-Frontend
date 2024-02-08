@@ -3,8 +3,11 @@
 // Router must be imported from next/navigation if placed in app folder
 import { useRouter, useParams, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import io from 'socket.io-client';
 
 const DEBUG = true;
+
+const socket = io("http://localhost:3333");
 
 const JoinSession = () => {
   const router = useRouter();
@@ -20,10 +23,44 @@ const JoinSession = () => {
   }
 
   const [host, setHost] = useState('');
+  const [usersCount, setUsersCount] = useState(0);
 
   const handleReturnToMainPage = () => {
     router.push('/');
+    socket.disconnect();
   };
+
+  useEffect(() => {  
+    socket.on("connect", () => {
+      console.log("Connected to server");
+    });
+
+    socket.on('num-users', ({count}) => {
+      setUsersCount(count);
+    });
+
+    socket.on('user-joined', ({ username, sessionID, count}) => {
+      if (sessionID === sessionID) {
+        setUsersCount(count);
+      }
+      console.log(`${username} has joined the session`);
+    });
+
+    socket.on('user-left', ({ username, sessionID, count}) => {
+      if (sessionID === sessionID) {
+        setUsersCount(count);
+      }
+      console.log(`${username} has left the session`);
+    });
+  
+    /* Disconnect when the client leaves their page 
+      By using "beforeunload" event */
+    return () => {
+      window.removeEventListener("beforeunload", () => {
+        socket.disconnect();
+      });
+    };
+  }, []);
 
   useEffect(() => {
     // Fetch the host information from the backend
@@ -47,10 +84,12 @@ const JoinSession = () => {
       }
     };
 
+    
+    // If sessionID exists, fetch the host information
     if (sessionID) {
       fetchHost(); // Call the function to fetch host information
-    }
-    else {
+      socket.emit('fetch-num-users', sessionID); // Call the function to fetch the current number of attendees in the session
+    } else {
       console.error('This sessionID does not exist. Please try again.');
     }
 
@@ -60,6 +99,7 @@ const JoinSession = () => {
     <div className="m-auto w-3/5 border-4 border-solid p-2.5 text-center">
       <h1 className='main-header' style={{fontSize: '30px'}}>Hello {name}. Welcome to lobby session {sessionID}</h1>
       <h2>Hosted by {host}</h2>
+      <h3>Users in the session: {usersCount}</h3>
 
       <button type='button' onClick={handleReturnToMainPage}
         style={{
