@@ -16,6 +16,7 @@ const JoinSession = () => {
   // SearchParams is used to get the name from the URL
   const SearchParams = useSearchParams();
   const name = SearchParams.get('name');
+  const [isLoading, setIsLoading] = useState(true);
 
   if (DEBUG) {
     console.log('sessionID:', sessionID);
@@ -76,6 +77,7 @@ const JoinSession = () => {
 
         if (data && data.host) {
           setHost(data.host);
+          setIsLoading(false);
         } else {
           console.error('Host information not available');
         }
@@ -83,17 +85,20 @@ const JoinSession = () => {
         console.error('Error fetching host information:', error);
       }
     };
-
     
     // If sessionID exists, fetch the host information
     if (sessionID) {
       fetchHost(); // Call the function to fetch host information
-      socket.emit('fetch-num-users', sessionID); // Call the function to fetch the current number of attendees in the session
+      
+      if (!isLoading) {       // We only want to call it once the session is fetched successfully
+        socket.emit('fetch-num-users', sessionID); // Call the function to fetch the current number of attendees in the session
+        console.log('fetch-num-users emitted')
+      }
     } else {
       console.error('This sessionID does not exist. Please try again.');
     }
 
-  }, [sessionID]); // useEffect will run whenever sessionID changes
+  }, [sessionID, isLoading]); // useEffect will run whenever sessionID changes
 
   return (
     <div className="m-auto w-3/5 border-4 border-solid p-2.5 text-center">
