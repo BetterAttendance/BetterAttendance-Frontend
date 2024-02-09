@@ -3,11 +3,9 @@
 // Router must be imported from next/navigation if placed in app folder
 import { useRouter, useParams, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import io from 'socket.io-client';
+import socket from '@/components/socket';
 
 const DEBUG = true;
-
-const socket = io("http://localhost:3333");
 
 const JoinSession = () => {
   const router = useRouter();
@@ -27,8 +25,15 @@ const JoinSession = () => {
   const [usersCount, setUsersCount] = useState(0);
 
   const handleReturnToMainPage = () => {
-    socket.disconnect();
-    router.push('/');
+    try {
+      console.log('Disconnecting socket...');
+      console.log('Socket ID:', socket.id); // Log the socket ID
+      socket.disconnect();
+      console.log('Socket disconnected');
+      router.push('/');
+    } catch (error) {
+      console.error('Error disconnecting socket:', error);
+    }
   };
 
   useEffect(() => {  

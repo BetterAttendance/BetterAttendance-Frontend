@@ -1,10 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import io from "socket.io-client";
 import { useRouter, useParams } from 'next/navigation';
-
-const socket = io("http://localhost:3333");
+import socket from "@/components/socket";
 
 const DEBUG = true;
 
