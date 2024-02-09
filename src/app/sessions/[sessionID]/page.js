@@ -27,8 +27,8 @@ const JoinSession = () => {
   const [usersCount, setUsersCount] = useState(0);
 
   const handleReturnToMainPage = () => {
-    router.push('/');
     socket.disconnect();
+    router.push('/');
   };
 
   useEffect(() => {  
