@@ -28,7 +28,7 @@ const JoinSession = () => {
     try {
       console.log('Disconnecting socket...');
       console.log('Socket ID:', socket.id); // Log the socket ID
-      socket.disconnect();
+      socket.emit('leave-session'); // Emit the leave-session event
       console.log('Socket disconnected');
       router.push('/');
     } catch (error) {
