@@ -78,32 +78,44 @@ const JoinSession = () => {
           console.log('Response:', response);
         }
         
-        const data = await response.json();    
+        if (response.ok) {
+          const data = await response.json();    
 
-        if (data && data.host) {
-          setHost(data.host);
-          setIsLoading(false);
+          if (data && data.host) {
+            setHost(data.host);
+            setIsLoading(false);
+          } else {
+            console.error('Host information not available');
+          }
         } else {
-          console.error('Host information not available');
+          // Handle the case where the sessionID is not valid or does not exist
+          console.error('Invalid session ID or session does not exist');
+          window.alert('⚠️ Sorry\nThis session does not exist.');
+          handleReturnToMainPage(); // Navigate back to the home page
+          }
+        } catch (error) {
+          console.error('Error fetching host information:', error);
         }
-      } catch (error) {
-        console.error('Error fetching host information:', error);
-      }
     };
-    
-    // If sessionID exists, fetch the host information
-    if (sessionID) {
-      fetchHost(); // Call the function to fetch host information
-      
-      if (!isLoading) {       // We only want to call it once the session is fetched successfully
-        socket.emit('fetch-num-users', sessionID); // Call the function to fetch the current number of attendees in the session
-        console.log('fetch-num-users emitted')
-      }
-    } else {
-      console.error('This sessionID does not exist. Please try again.');
-    }
 
-  }, [sessionID, isLoading]); // useEffect will run whenever sessionID changes
+    // Handle case where a attendee tries to access the session without a name
+    if (!name) {
+      window.alert('⚠️ Sorry\nThis URL is not allowed.\nPlease access the session from the main page or from the URL:\n/join/[sessionID].');
+      handleReturnToMainPage(); // Navigate back to the home page if sessionID or name is missing
+    } else {
+      // If sessionID exists, fetch the host information
+      if (sessionID) {
+        fetchHost(); // Call the function to fetch host information
+
+        if (!isLoading) {       // We only want to call it once the session is fetched successfully
+          socket.emit('fetch-num-users', sessionID); // Call the function to fetch the current number of attendees in the session
+          console.log('fetch-num-users emitted')
+        }
+      } else {
+        console.error('This sessionID does not exist. Please try again.');
+      }
+    }
+  }, [name, sessionID, isLoading]); // useEffect will run whenever these variables change
 
   return (
     <div className="m-auto w-3/5 border-4 border-solid p-2.5 text-center">
