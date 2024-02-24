@@ -1,10 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import io from "socket.io-client";
 import { useRouter } from 'next/navigation';
-
-const socket = io("http://localhost:3333");
+import socket from "@/components/socket";
 
 const DEBUG = true;
 
@@ -23,18 +21,26 @@ const Session = () => {
         window.alert("Please enter your name before you continue.")
       } else {
         socket.emit('new-client', username)
-
+  
         if (sessionID == "") {
           window.alert("Please enter the room session to connect.")
         } else {
-          socket.emit("user-joined", sessionID);
-          console.log("You have joined a session");
-          router.push(`/sessions/${sessionID}?name=${username}`);    // Redirect to the session page with the session ID
+          socket.emit("join-session", sessionID);
+          socket.on("join-session-validate", ({success}) => {
+            if (!success) {
+              window.alert("The session ID you entered is invalid. Please try again.");
+            }
+            else {
+              console.log("You have joined a session");
+              router.push(`/sessions/${sessionID}?name=${username}`);    // Redirect to the session page with the session ID
+            }
+          });
+  
+          if (DEBUG) {
+            console.log("handleUserName and handleJoinSession reached") 
+          }
         }
-
-        if (DEBUG) {
-          console.log("handleUserName and handleJoinSession reached") 
-      }}
+      }
     };
 
     const handleSessionIDChange = (event) => {
@@ -49,11 +55,6 @@ const Session = () => {
     useEffect(() => {  
       socket.on("connect", () => {
         console.log("Connected to server");
-      });
-  
-      socket.on("user-joined", (userName) => {
-        console.log(`${userName} has joined the room session`);
-        setUsername(userName);
       });
   
       /* Disconnect when the client leaves their page 

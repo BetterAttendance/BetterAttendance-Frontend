@@ -3,6 +3,7 @@
 // Router must be imported from next/navigation if placed in app folder
 import { useRouter, useParams, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import socket from '@/components/socket';
 
 const DEBUG = true;
 
@@ -13,6 +14,7 @@ const JoinSession = () => {
   // SearchParams is used to get the name from the URL
   const SearchParams = useSearchParams();
   const name = SearchParams.get('name');
+  const [isLoading, setIsLoading] = useState(true);
 
   if (DEBUG) {
     console.log('sessionID:', sessionID);
@@ -20,10 +22,51 @@ const JoinSession = () => {
   }
 
   const [host, setHost] = useState('');
+  const [usersCount, setUsersCount] = useState(0);
 
   const handleReturnToMainPage = () => {
-    router.push('/');
+    try {
+      console.log('Disconnecting socket...');
+      console.log('Socket ID:', socket.id); // Log the socket ID
+      socket.emit('leave-session'); // Emit the leave-session event
+      console.log('Socket disconnected');
+      router.push('/');
+    } catch (error) {
+      console.error('Error disconnecting socket:', error);
+    }
   };
+
+  useEffect(() => {  
+    socket.on("connect", () => {
+      console.log("Connected to server");
+    });
+
+    socket.on('num-users', ({count}) => {
+      setUsersCount(count);
+    });
+
+    socket.on('user-joined', ({ username, sessionID, count}) => {
+      if (sessionID === sessionID) {
+        setUsersCount(count);
+      }
+      console.log(`${username} has joined the session`);
+    });
+
+    socket.on('user-left', ({ username, sessionID, count}) => {
+      if (sessionID === sessionID) {
+        setUsersCount(count);
+      }
+      console.log(`${username} has left the session`);
+    });
+  
+    /* Disconnect when the client leaves their page 
+      By using "beforeunload" event */
+    return () => {
+      window.removeEventListener("beforeunload", () => {
+        socket.disconnect();
+      });
+    };
+  }, []);
 
   useEffect(() => {
     // Fetch the host information from the backend
@@ -35,31 +78,50 @@ const JoinSession = () => {
           console.log('Response:', response);
         }
         
-        const data = await response.json();    
+        if (response.ok) {
+          const data = await response.json();    
 
-        if (data && data.host) {
-          setHost(data.host);
+          if (data && data.host) {
+            setHost(data.host);
+            setIsLoading(false);
+          } else {
+            console.error('Host information not available');
+          }
         } else {
-          console.error('Host information not available');
+          // Handle the case where the sessionID is not valid or does not exist
+          console.error('Invalid session ID or session does not exist');
+          window.alert('⚠️ Sorry\nThis session does not exist.');
+          handleReturnToMainPage(); // Navigate back to the home page
+          }
+        } catch (error) {
+          console.error('Error fetching host information:', error);
         }
-      } catch (error) {
-        console.error('Error fetching host information:', error);
-      }
     };
 
-    if (sessionID) {
-      fetchHost(); // Call the function to fetch host information
-    }
-    else {
-      console.error('This sessionID does not exist. Please try again.');
-    }
+    // Handle case where a attendee tries to access the session without a name
+    if (!name) {
+      window.alert('⚠️ Sorry\nThis URL is not allowed.\nPlease access the session from the main page or from the URL:\n/join/[sessionID].');
+      handleReturnToMainPage(); // Navigate back to the home page if sessionID or name is missing
+    } else {
+      // If sessionID exists, fetch the host information
+      if (sessionID) {
+        fetchHost(); // Call the function to fetch host information
 
-  }, [sessionID]); // useEffect will run whenever sessionID changes
+        if (!isLoading) {       // We only want to call it once the session is fetched successfully
+          socket.emit('fetch-num-users', sessionID); // Call the function to fetch the current number of attendees in the session
+          console.log('fetch-num-users emitted')
+        }
+      } else {
+        console.error('This sessionID does not exist. Please try again.');
+      }
+    }
+  }, [name, sessionID, isLoading]); // useEffect will run whenever these variables change
 
   return (
     <div className="m-auto w-3/5 border-4 border-solid p-2.5 text-center">
       <h1 className='main-header' style={{fontSize: '30px'}}>Hello {name}. Welcome to lobby session {sessionID}</h1>
       <h2>Hosted by {host}</h2>
+      <h3>Users in the session: {usersCount}</h3>
 
       <button type='button' onClick={handleReturnToMainPage}
         style={{
