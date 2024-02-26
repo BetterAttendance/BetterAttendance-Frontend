@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { Providers } from './providers';
 import SocketsProvider from '@/context/socket.context';
+import React from 'react';
 
 import './globals.css';
 
@@ -21,7 +22,11 @@ export default function RootLayout({
     <SocketsProvider>
       <html lang="en" className="light">
         <body className={inter.className}>
-          <Providers>{children}</Providers>
+          <Providers>
+            <main className="flex items-center justify-center min-h-screen">
+              {children}
+            </main>
+          </Providers>
         </body>
       </html>
     </SocketsProvider>

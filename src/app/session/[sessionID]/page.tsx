@@ -1,6 +1,5 @@
-import React from 'react';
 import SessionLobby from '@/components/SessionLobby'; // Import the SessionLobby component
 
 export default function Page() {
-    return <SessionLobby />;
+  return <SessionLobby />;
 }
