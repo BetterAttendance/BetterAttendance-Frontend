@@ -16,56 +16,24 @@ export default function SessionLobby() {
         router.push('/');
     };
 
-    /* TypeScript will complain that parameter 'any' implicitly has an 'any' type
-        So we need to declare it */
-    const handleSubmitUsername = (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        setUsername(event.currentTarget.username.value);
-
-        // Save username to local storage
-        localStorage.setItem('username', event.currentTarget.username.value);
-    };
-
-    useEffect(() => {
-        const storedUsername = localStorage.getItem('username');
-        if (storedUsername) {
-            setUsername(storedUsername);
-        }
-
-    }, []);
-
     return (
         <main className="flex min-h-screen flex-col items-center p-24">
             <h1>Welcome to session room: {sessionID}</h1>
-            {username !== '' ? (
-                <>
-                    <h2>To join the session please scan the QR code below</h2>
-                    <br />
+            <h2>To join the session please scan the QR code below</h2>
+            
+            <br />
+        
+            <QRCodeCanvas 
+                value={`http://localhost:3000/session/${sessionID}`} 
+                id="qrCode"
+                size={300}
+            />
 
-                    <QRCodeCanvas 
-                        value={`http://localhost:3000/session/${sessionID}`} 
-                        id="qrCode"
-                        size={300}
-                    />
+            <br />
 
-                    <br />
-                    <Button color="primary" variant="solid" onClick={handleReturnToHome}>
-                        Return
-                    </Button>
-                </>
-            ) : (
-                <form onSubmit={handleSubmitUsername} className='flex flex-col justify-center'>
-                    <label>Please enter your name to join:</label>
-                    <input 
-                        type="text" 
-                        name="username"
-                    />
-                    <br />
-                    <Button type="submit" color="primary" variant="solid">
-                        Submit
-                    </Button>
-                </form>
-            )}
+            <Button color="primary" variant="solid" onClick={handleReturnToHome}>
+                Return
+            </Button>
         </main>
     );
 }

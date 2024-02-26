@@ -4,6 +4,7 @@ import { Providers } from './providers';
 import SocketsProvider from '@/context/socket.context';
 
 import './globals.css';
+import UserProvider from '@/context/user.context';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -19,11 +20,13 @@ export default function RootLayout({
 }>) {
   return (
     <SocketsProvider>
-      <html lang="en" className="light">
-        <body className={inter.className}>
-          <Providers>{children}</Providers>
-        </body>
-      </html>
+      <UserProvider>
+        <html lang="en" className="light">
+          <body className={inter.className}>
+            <Providers>{children}</Providers>
+          </body>
+        </html>
+      </UserProvider>
     </SocketsProvider>
   );
 }
