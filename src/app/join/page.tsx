@@ -15,18 +15,32 @@ import { IoCopy } from 'react-icons/io5';
 export default function Join() {
   const router = useRouter();
   const [sessionCode, setSessionCode] = useState<string>('');
+  const [username, setUsername] = useState<string>('');
 
   const validateSessionCode = (sessionCode: string) =>
-    sessionCode.match(/^[A-Za-z0-9]{5}$/i);
+    sessionCode.match(/^[A-Za-z0-9]{5}$/i); // 5 digits alphanumeric
 
   const isInvalid = useMemo(() => {
     if (sessionCode === '') return true;
+    if (username === '') return true;
 
     return validateSessionCode(sessionCode) ? false : true;
-  }, [sessionCode]);
+  }, [sessionCode, username]);
 
   const handleJoinButton = () => {
-    // TODO: Validate session code from backend
+    // TODO: handleJoinButton
+    // Step 1. Validate if sessionCode is on backend
+    // Step 2. Look for userId and username in localStorage, if not found, generate userId and save both username and userId on localStorage
+    // const localUserId = localStorage.getItem('userId');
+    // const localUsername = localStorage.getItem('username');
+
+    // if (localUserId) {
+
+    // }
+    // Step 3. Check if userId is a host on backend
+    // Step 4. If everything is OK (sessionCode is valid, user has userId and username), then proceed joining the session.
+    // Step 5. Handle all errors appropriately
+
     router.push(`/session/${sessionCode}`);
   };
 
@@ -39,10 +53,15 @@ export default function Join() {
         <CardBody className="flex items-center gap-3">
           Enter your session code
           <Input
-            placeholder="#####"
+            placeholder="e.g. Cpp24"
             value={sessionCode}
             onValueChange={setSessionCode}
-            isInvalid={isInvalid}
+          />
+          Enter your name
+          <Input
+            placeholder="e.g. John Doe"
+            value={username}
+            onValueChange={setUsername}
           />
           {isInvalid ? (
             <Button isDisabled color="primary" startContent={<IoCopy />}>
