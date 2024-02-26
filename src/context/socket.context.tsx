@@ -2,8 +2,8 @@
 
 import { createContext, useContext, useState, useEffect } from 'react';
 import io, { Socket } from 'socket.io-client';
-import EVENTS from '@/app/config/events';
-import SOCKET_CONFIG from '@/app/config/socket.config';
+import EVENTS from '@/config/events';
+import SOCKET_CONFIG from '@/config/socket.config';
 
 interface Context {
   socket: Socket | null;
