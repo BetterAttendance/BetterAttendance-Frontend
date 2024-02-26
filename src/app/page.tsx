@@ -1,6 +1,5 @@
 import StartSessionButton from '@/components/StartSessionButton';
-import { Card, CardBody, CardHeader, Divider } from '@nextui-org/react';
-import Link from 'next/link';
+import { Card, CardBody, CardHeader, Divider, Link } from '@nextui-org/react';
 
 export default function Home() {
   return (
