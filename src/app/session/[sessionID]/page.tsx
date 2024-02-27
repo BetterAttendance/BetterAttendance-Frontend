@@ -1,5 +1,19 @@
-import SessionLobby from '@/components/SessionLobby'; // Import the SessionLobby component
+"use client";
+
+import SessionLobby from '@/components/SessionLobby';
+import ClientSessionLobby from '@/components/ClientSessionLobby';
+import { useState } from 'react';
 
 export default function Page() {
-  return <SessionLobby />;
+  const [isHost, setIsHost] = useState(true);
+
+    return (
+        <>
+            { isHost ? ( 
+                <SessionLobby />
+            ) : (
+                <ClientSessionLobby />
+            )}
+        </>
+    );
 }
