@@ -9,8 +9,9 @@ import {
   Link,
 } from '@nextui-org/react';
 import { useRouter } from 'next/navigation';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { IoCopy } from 'react-icons/io5';
+import { nanoid } from 'nanoid';
 
 export default function Join() {
   const router = useRouter();
@@ -27,21 +28,23 @@ export default function Join() {
     return validateSessionCode(sessionCode) ? false : true;
   }, [sessionCode, username]);
 
+  useEffect(() => {
+    if (username) {
+      localStorage.setItem('username', username);
+    }
+  }, [username]);
+
   const handleJoinButton = () => {
     // TODO: handleJoinButton
-    // Step 1. Validate if sessionCode is on backend
-    // Step 2. Look for userId and username in localStorage, if not found, generate userId and save both username and userId on localStorage
-    // const localUserId = localStorage.getItem('userId');
-    // const localUsername = localStorage.getItem('username');
+    // 1. Check if client has userId and username, if none, generate a new one
+    if (!localStorage.getItem('userId')) {
+      localStorage.setItem('userId', nanoid());
+      console.log('userId not found, generating new userId');
+    }
 
-    // if (localUserId) {
+    // 2. Call server listener, send the generated userId, username, and sessionId to the SERVER
 
-    // }
-    // Step 3. Check if userId is a host on backend
-    // Step 4. If everything is OK (sessionCode is valid, user has userId and username), then proceed joining the session.
-    // Step 5. Handle all errors appropriately
-
-    router.push(`/session/${sessionCode}`);
+    // router.push(`/session/${sessionCode}`);
   };
 
   return (
