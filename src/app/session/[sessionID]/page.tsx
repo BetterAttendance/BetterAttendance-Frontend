@@ -1,10 +1,10 @@
 'use client';
 
-import SessionLobby from '@/components/SessionLobby';
-import ClientSessionLobby from '@/components/ClientSessionLobby';
+import SessionLobby from '@/components/session_lobby/SessionLobby';
+import ClientSessionLobby from '@/components/session_lobby/ClientSessionLobby';
 import { useState } from 'react';
 import { Card, CardBody, CardHeader } from '@nextui-org/react';
-import QuitSessionButton from '@/components/QuitSessionButton';
+import QuitSessionButton from '@/components/session_lobby/QuitSessionButton';
 
 export default function Page() {
   const [isHost, setIsHost] = useState(true);
