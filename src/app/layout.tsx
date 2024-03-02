@@ -2,9 +2,11 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { Providers } from './providers';
 import SocketsProvider from '@/context/socket.context';
+import UserProvider from '@/context/user.context';
 import React from 'react';
 
 import './globals.css';
+import { User } from '@nextui-org/react';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -20,6 +22,7 @@ export default function RootLayout({
 }>) {
   return (
     <SocketsProvider>
+      <UserProvider>
       <html lang="en" className="light">
         <body className={inter.className}>
           <Providers>
@@ -29,6 +32,7 @@ export default function RootLayout({
           </Providers>
         </body>
       </html>
+      </UserProvider>
     </SocketsProvider>
   );
 }
