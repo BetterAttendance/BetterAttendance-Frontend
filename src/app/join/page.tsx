@@ -11,11 +11,14 @@ import {
 import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
 import { IoCopy } from 'react-icons/io5';
+import { useSocket } from '@/context/socket.context';
+import EVENTS from '@/config/events';
 
 export default function Join() {
   const router = useRouter();
   const [sessionCode, setSessionCode] = useState<string>('');
   const [username, setUsername] = useState<string>('');
+  const { socket } = useSocket();
 
   const validateSessionCode = (sessionCode: string) =>
     sessionCode.match(/^[A-Za-z0-9]{5}$/i); // 5 digits alphanumeric
@@ -34,9 +37,20 @@ export default function Join() {
     // const localUserId = localStorage.getItem('userId');
     // const localUsername = localStorage.getItem('username');
 
-    // if (localUserId) {
+    if (!localStorage.getItem('username')) {
+      localStorage.setItem('username', 'MumboJumbo'); // We can set random username later
+      console.log('username not found, using MumboJumbo as username');
+    }
 
-    // }
+    // 2. Call server listener, send the generated userId, username, and sessionId to the SERVER
+    if (socket && sessionCode !== '') {
+      socket.emit(EVENTS.CLIENT.JOIN_SESSION, {
+        userId: localStorage.getItem('userId'),
+        username: localStorage.getItem('username'),
+        sessionId: sessionCode,
+      });
+    }
+
     // Step 3. Check if userId is a host on backend
     // Step 4. If everything is OK (sessionCode is valid, user has userId and username), then proceed joining the session.
     // Step 5. Handle all errors appropriately

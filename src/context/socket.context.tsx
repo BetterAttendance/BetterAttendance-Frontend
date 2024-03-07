@@ -25,6 +25,7 @@ const SocketsProvider = (props: any) => {
       upgrade: true,
       transports: ['websocket', 'polling'],
     });
+    console.log('test');
 
     setSocket(clientSocket);
 
