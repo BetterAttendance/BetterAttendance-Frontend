@@ -1,10 +1,9 @@
 'use client';
 
-import SessionLobby from '@/components/SessionLobby';
-import ClientSessionLobby from '@/components/ClientSessionLobby';
-import { use, useEffect, useState } from 'react';
+import SessionLobby from '@/components/session_lobby/SessionLobby';
+import ClientSessionLobby from '@/components/session_lobby/ClientSessionLobby';
 import { Card, CardBody, CardHeader } from '@nextui-org/react';
-import QuitSessionButton from '@/components/QuitSessionButton';
+import QuitSessionButton from '@/components/session_lobby/QuitSessionButton';
 import { useUser } from '@/context/user.context';
 
 export default function Page() {

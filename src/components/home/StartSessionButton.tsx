@@ -4,7 +4,7 @@ import EVENTS from '@/config/events';
 import { useSocket } from '@/context/socket.context';
 import { Button } from '@nextui-org/react';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { nanoid } from 'nanoid';
 import { useUser } from '@/context/user.context';
 

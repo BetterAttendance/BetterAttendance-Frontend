@@ -1,6 +1,6 @@
 'use client';
 
-import StartSessionButton from '@/components/session_lobby/StartSessionButton';
+import StartSessionButton from './StartSessionButton';
 import { Card, CardBody, CardHeader, Divider, Link } from '@nextui-org/react';
 
 export default function HomeContainer() {

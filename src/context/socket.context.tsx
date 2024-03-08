@@ -4,7 +4,6 @@ import { createContext, useContext, useState, useEffect } from 'react';
 import io, { Socket } from 'socket.io-client';
 import EVENTS from '@/config/events';
 import SOCKET_CONFIG from '@/config/socket.config';
-import { nanoid } from 'nanoid';
 
 interface Context {
   socket: Socket | null;
@@ -36,12 +35,12 @@ const SocketsProvider = (props: any) => {
 
   if (socket) {
     socket.on(EVENTS.SERVER.JOIN_SESSION, ({ sessionID }) => {
-      console.log("Setting sessionID: ", sessionID);
+      console.log('Setting sessionID: ', sessionID);
       setSessionID(sessionID);
     });
 
     socket.on(EVENTS.SERVER.LEAVE_SESSION, () => {
-      console.log("Setting sessionID: ", sessionID);
+      console.log('Setting sessionID: ', sessionID);
       setSessionID('');
     });
   }
