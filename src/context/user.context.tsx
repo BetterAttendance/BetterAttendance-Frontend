@@ -54,7 +54,7 @@ const UserProvider = (props: any) => {
     }, []);
 
     useEffect(() => {
-        if (userID) {
+        if (userID && sessionCode) {
             checkIfHost(userID);
         }
     }, [userID, sessionCode]);
