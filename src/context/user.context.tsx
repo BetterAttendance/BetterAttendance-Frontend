@@ -22,14 +22,14 @@ const UserContextType = createContext<UserContextType>({
 const UserProvider = (props: any) => {
     const [userID, setUserID] = useState<string | null>('');
     const [isHost, setIsHost] = useState<boolean>(false);
-    const { socket, sessionID } = useSocket();
+    const { socket, sessionCode } = useSocket();
 
     // TypeScript will complain if we don't declare null as a possible value for userID
     const checkIfHost = (userID: string | null) => {
         if (socket) {
             console.log('Checking if user is host.');
-            console.log('SessionID: ', sessionID);
-            socket.emit(EVENTS.CLIENT.CHECK_IF_HOST, { userID, sessionID });
+            console.log('sessionCode: ', sessionCode);
+            socket.emit(EVENTS.CLIENT.CHECK_IF_HOST, { userID, sessionCode });
             socket.on(EVENTS.SERVER.CHECK_IF_HOST, ( data: { isHost: boolean } ) => {
                 setIsHost(data.isHost);
                 console.log('User is host:', data.isHost);
@@ -57,7 +57,7 @@ const UserProvider = (props: any) => {
         if (userID) {
             checkIfHost(userID);
         }
-    }, [userID, sessionID]);
+    }, [userID, sessionCode]);
 
     const ContextValue = {
         userID,

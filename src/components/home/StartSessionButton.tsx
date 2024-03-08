@@ -9,7 +9,7 @@ import { nanoid } from 'nanoid';
 import { useUser } from '@/context/user.context';
 
 export default function StartSessionButton() {
-  const { socket, sessionID } = useSocket();
+  const { socket, sessionCode } = useSocket();
   const router = useRouter();
   const { userID } = useUser();
 
@@ -24,10 +24,10 @@ export default function StartSessionButton() {
   };
 
   useEffect(() => {
-    if (sessionID) {
-      router.push(`/session/${sessionID}`);
+    if (sessionCode) {
+      router.push(`/session/${sessionCode}`);
     }
-  }, [router, sessionID]);
+  }, [router, sessionCode]);
 
   return (
     <>

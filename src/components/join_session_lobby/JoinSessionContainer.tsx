@@ -42,12 +42,12 @@ export default function JoinSessionContainer() {
       console.log('username not found, using MumboJumbo as username');
     }
 
-    // 2. Call server listener, send the generated userId, username, and sessionId to the SERVER
+    // 2. Call server listener, send the generated userId, username, and sessionCode to the SERVER
     if (socket && sessionCode !== '') {
       socket.emit(EVENTS.CLIENT.JOIN_SESSION, {
         userId: localStorage.getItem('userId'),
         username: localStorage.getItem('username'),
-        sessionId: sessionCode,
+        sessionCode: sessionCode,
       });
     }
 

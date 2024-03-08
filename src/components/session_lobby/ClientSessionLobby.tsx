@@ -5,7 +5,7 @@ import { Button } from '@nextui-org/react';
 
 export default function ClientSessionLobby() {
   const [username, setUsername] = useState<string>('');
-  const { socket, sessionID } = useSocket();
+  const { socket, sessionCode } = useSocket();
   const [isQuizStarted, setIsQuizStarted] = useState<boolean>(false);
 
   const handleSubmitUsername = (event: React.FormEvent<HTMLFormElement>) => {
@@ -32,7 +32,7 @@ export default function ClientSessionLobby() {
         <CardBody className="flex items-center">
           {username === '' ? (
             <>
-              <h1>Welcome to session room: {sessionID}</h1>
+              <h1>Welcome to session room: {sessionCode}</h1>
               <form
                 onSubmit={handleSubmitUsername}
                 className="flex flex-col justify-center"
@@ -47,7 +47,7 @@ export default function ClientSessionLobby() {
           ) : (
             <>
               <h1>
-                Hello {username}! Welcome to session room: {sessionID}
+                Hello {username}! Welcome to session room: {sessionCode}
               </h1>
               <h2 className="pb-5">
                 Please wait until the host start the quiz
