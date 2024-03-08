@@ -8,6 +8,7 @@ import SOCKET_CONFIG from '@/config/socket.config';
 interface Context {
   socket: Socket | null;
   sessionCode?: string;
+  setSessionCode?: (sessionCode: string) => void; // Exported function
 }
 
 const SocketContext = createContext<Context>({
@@ -15,7 +16,7 @@ const SocketContext = createContext<Context>({
 });
 
 const SocketsProvider = (props: any) => {
-  const [sessionCode, setsessionCode] = useState<string>('');
+  const [sessionCode, setSessionCode] = useState<string>('');
   const [socket, setSocket] = useState<Socket | null>(null);
 
   useEffect(() => {
@@ -36,16 +37,16 @@ const SocketsProvider = (props: any) => {
   if (socket) {
     socket.on(EVENTS.SERVER.JOIN_SESSION, ({ sessionCode }) => {
       console.log('Setting sessionCode: ', sessionCode);
-      setsessionCode(sessionCode);
+      setSessionCode(sessionCode);
     });
 
     socket.on(EVENTS.SERVER.LEAVE_SESSION, () => {
       console.log('Setting sessionCode: ', sessionCode);
-      setsessionCode('');
+      setSessionCode('');
     });
   }
 
-  return <SocketContext.Provider value={{ socket, sessionCode }} {...props} />;
+  return <SocketContext.Provider value={{ socket, sessionCode, setSessionCode }} {...props} />;
 };
 
 export const useSocket = () => useContext(SocketContext);
