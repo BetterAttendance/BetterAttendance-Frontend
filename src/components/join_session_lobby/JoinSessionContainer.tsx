@@ -13,21 +13,23 @@ import { useEffect, useMemo, useState } from 'react';
 import { IoCopy } from 'react-icons/io5';
 import { nanoid } from 'nanoid';
 import toast, { Toaster } from 'react-hot-toast';
+import { useSocket } from '@/context/socket.context';
 
 export default function JoinSessionContainer() {
   const router = useRouter();
-  const [sessionCode, setSessionCode] = useState<string>('');
   const [username, setUsername] = useState<string>('');
+  const [sessionCodeInput, setSessionCodeInput] = useState<string>('');
+  const { sessionCode, setSessionCode } = useSocket();
 
   const validateSessionCode = (sessionCode: string) =>
     sessionCode.match(/^[A-Za-z0-9]{5}$/i); // 5 digits alphanumeric
 
   const isInvalid = useMemo(() => {
-    if (sessionCode === '') return true;
+    if (sessionCodeInput === '') return true;
     if (username === '') return true;
 
-    return validateSessionCode(sessionCode) ? false : true;
-  }, [sessionCode, username]);
+    return validateSessionCode(sessionCodeInput) ? false : true;
+  }, [sessionCodeInput, username]);
 
   const handleJoinButton = () => {
     if (!localStorage.getItem('userId')) {
@@ -39,7 +41,9 @@ export default function JoinSessionContainer() {
       return;
     }
 
-    router.push(`/session/${sessionCode}`);
+    setSessionCode(sessionCodeInput);
+
+    router.push(`/session/${sessionCodeInput}`);
   };
 
   useEffect(() => {
@@ -65,8 +69,8 @@ export default function JoinSessionContainer() {
           Enter your session code
           <Input
             placeholder="e.g. Cpp24"
-            value={sessionCode}
-            onValueChange={setSessionCode}
+            value={sessionCodeInput}
+            onValueChange={setSessionCodeInput}
           />
           Enter your name
           <Input
