@@ -7,12 +7,14 @@ import SOCKET_CONFIG from '@/config/socket.config';
 
 interface Context {
   socket: Socket | null;
-  sessionCode?: string;
-  setSessionCode?: (sessionCode: string) => void; // Exported function
+  sessionCode: string;
+  setSessionCode: (sessionCode: string) => void; // Exported function
 }
 
 const SocketContext = createContext<Context>({
   socket: null,
+  sessionCode: '',
+  setSessionCode: () => {},
 });
 
 const SocketsProvider = (props: any) => {
@@ -25,7 +27,6 @@ const SocketsProvider = (props: any) => {
       upgrade: true,
       transports: ['websocket', 'polling'],
     });
-    console.log('test');
 
     setSocket(clientSocket);
 
@@ -46,7 +47,12 @@ const SocketsProvider = (props: any) => {
     });
   }
 
-  return <SocketContext.Provider value={{ socket, sessionCode, setSessionCode }} {...props} />;
+  return (
+    <SocketContext.Provider
+      value={{ socket, sessionCode, setSessionCode }}
+      {...props}
+    />
+  );
 };
 
 export const useSocket = () => useContext(SocketContext);
