@@ -9,16 +9,15 @@ import {
   Link,
 } from '@nextui-org/react';
 import { useRouter } from 'next/navigation';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { IoCopy } from 'react-icons/io5';
-import { useSocket } from '@/context/socket.context';
-import EVENTS from '@/config/events';
+import { nanoid } from 'nanoid';
+import toast, { Toaster } from 'react-hot-toast';
 
 export default function JoinSessionContainer() {
   const router = useRouter();
   const [sessionCode, setSessionCode] = useState<string>('');
   const [username, setUsername] = useState<string>('');
-  const { socket } = useSocket();
 
   const validateSessionCode = (sessionCode: string) =>
     sessionCode.match(/^[A-Za-z0-9]{5}$/i); // 5 digits alphanumeric
@@ -31,34 +30,33 @@ export default function JoinSessionContainer() {
   }, [sessionCode, username]);
 
   const handleJoinButton = () => {
-    // TODO: handleJoinButton
-    // Step 1. Validate if sessionCode is on backend
-    // Step 2. Look for userId and username in localStorage, if not found, generate userId and save both username and userId on localStorage
-    // const localUserId = localStorage.getItem('userId');
-    // const localUsername = localStorage.getItem('username');
+    if (!localStorage.getItem('userId')) {
+      localStorage.setItem('userId', nanoid());
+    }
 
     if (!localStorage.getItem('username')) {
-      localStorage.setItem('username', 'MumboJumbo'); // We can set random username later
-      console.log('username not found, using MumboJumbo as username');
+      toast('Please enter your name before you continue');
+      return;
     }
 
-    // 2. Call server listener, send the generated userId, username, and sessionCode to the SERVER
-    if (socket && sessionCode !== '') {
-      socket.emit(EVENTS.CLIENT.JOIN_SESSION, {
-        userId: localStorage.getItem('userId'),
-        username: localStorage.getItem('username'),
-        sessionCode: sessionCode,
-      });
-    }
-
-    // Step 3. Check if userId is a host on backend
-    // Step 4. If everything is OK (sessionCode is valid, user has userId and username), then proceed joining the session.
-    // Step 5. Handle all errors appropriately
-
-    // router.push(`/session/${sessionCode}`);
+    router.push(`/session/${sessionCode}`);
   };
+
+  useEffect(() => {
+    localStorage.setItem('username', username);
+  }, [username]);
+
   return (
     <>
+      <Toaster
+        toastOptions={{
+          className: '',
+          style: {
+            border: '1px solid red',
+            color: 'red',
+          },
+        }}
+      />
       <Card className="p-5">
         <CardHeader>
           <Link href="/">Back</Link>
