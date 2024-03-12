@@ -1,18 +1,22 @@
 "use client";
 
-import { useContext, createContext, useEffect } from "react";
+import { useContext, createContext, useEffect, useState } from "react";
 import { nanoid } from "nanoid";
 
 interface UserContextType {
   generateNewUserId: () => void;
+  validationDone: boolean;
+  setValidationDone: (value: boolean) => void;
 }
 
 const UserContextType = createContext<UserContextType>({
   generateNewUserId: () => {},
+  validationDone: false,
+  setValidationDone: () => {},
 });
 
 const UserProvider = (props: any) => {
-  // TypeScript will complain if we don't declare null as a possible value for userID
+  const [validationDone, setValidationDone] = useState<boolean>(false);
 
   const generateNewUserId = () => {
     localStorage.setItem("userId", nanoid());
@@ -31,6 +35,8 @@ const UserProvider = (props: any) => {
 
   const ContextValue = {
     generateNewUserId,
+    validationDone,
+    setValidationDone,
   };
 
   return <UserContextType.Provider value={ContextValue} {...props} />;

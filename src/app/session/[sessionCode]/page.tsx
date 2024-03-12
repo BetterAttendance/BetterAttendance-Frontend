@@ -13,7 +13,7 @@ import { useParams } from 'next/navigation';
 export default function Page() {
   const { socket } = useSocket();
   const [ isHost, setIsHost ] = useState(false);
-  const { generateNewUserId } = useUser();
+  const { generateNewUserId, setValidationDone } = useUser();
 
   // Use useParams hook to get sessionCode parameters
   // Synchonize problem if we use sessionCode from useSocket
@@ -26,6 +26,7 @@ export default function Page() {
       socket.on(EVENTS.SERVER.CHECK_IF_HOST, (data: { isHost: boolean }) => {
         setIsHost(data.isHost);
         console.log('User is host:', data.isHost);
+        setValidationDone(true);
       });
     }
   }
