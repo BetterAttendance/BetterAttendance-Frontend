@@ -49,6 +49,19 @@ export default function Page() {
     }
   }, []);  
 
+  // In case the user refresh the page, we need to check if the user is host again
+  useEffect(() => {
+    const userId = localStorage.getItem('userId');
+
+    if (userId && sessionCode) {
+      // TypeScript will complain if we don't convert sessionCode to string
+      checkIfHost(userId, sessionCode.toString());
+    } else {
+      console.error('User ID or session code not found. Redirecting to join page.');
+      window.location.href = '/join';
+    }
+  }, [socket]);
+
   return (
     <>
       <Card className="p-5">

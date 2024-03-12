@@ -1,19 +1,31 @@
-import { useState, useEffect } from "react";
-import { Card, CardBody, CardHeader, Link } from "@nextui-org/react";
+import { useState, useEffect, use } from "react";
 import { Button } from "@nextui-org/react";
 import { useParams } from "next/navigation";
+import { useUser } from "@/context/user.context";
 
 export default function ClientSessionLobby() {
   const [username, setUsername] = useState<string>("");
   const [isQuizStarted, setIsQuizStarted] = useState<boolean>(false);
   const { sessionCode } = useParams();
+  const { validationDone } = useUser();
 
   useEffect(() => {
-    const username = localStorage.getItem("username");
-    if (username !== null) {
-      setUsername(username as string);
+    const name = localStorage.getItem("username");
+    if (name !== null) {
+      setUsername(name as string);
     }
   }, []);
+
+  useEffect(() => {
+    if (validationDone) {
+      const name = localStorage.getItem("username");
+      if (name == null) {
+        // No toast alert here because we want to disable the content
+        window.alert("Username missing. Redirecting to join page.");
+        window.location.href = "/join";
+      }
+    }
+  }, [validationDone]);
 
   return (
     <>
