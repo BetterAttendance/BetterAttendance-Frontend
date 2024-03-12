@@ -5,18 +5,18 @@ import { useSocket } from '@/context/socket.context';
 import { Button } from '@nextui-org/react';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import { nanoid } from 'nanoid';
 import { useUser } from '@/context/user.context';
 
 export default function StartSessionButton() {
   const { socket, sessionCode } = useSocket();
   const router = useRouter();
-  const { userID } = useUser();
+  const { generateNewUserId } = useUser();
 
   const handleStartButton = () => {
     if (socket) {
+      const userID = localStorage.getItem('userId');
       if (!userID) {
-        localStorage.setItem('userId', nanoid());
+        generateNewUserId();
       }
 
       socket.emit(EVENTS.CLIENT.CREATE_SESSION, { host_id: userID });

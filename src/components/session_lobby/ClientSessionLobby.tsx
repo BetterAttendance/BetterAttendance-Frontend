@@ -1,25 +1,18 @@
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useSocket } from '@/context/socket.context';
 import { Card, CardBody, CardHeader, Link } from '@nextui-org/react';
 import { Button } from '@nextui-org/react';
 
 export default function ClientSessionLobby() {
   const [username, setUsername] = useState<string>('');
-  const { socket, sessionCode } = useSocket();
+  const { sessionCode } = useSocket();
   const [isQuizStarted, setIsQuizStarted] = useState<boolean>(false);
 
-  const handleSubmitUsername = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setUsername(event.currentTarget.username.value);
-
-    // Save username to local storage
-    localStorage.setItem('username', event.currentTarget.username.value);
-  };
-
   useEffect(() => {
-    const storedUsername = localStorage.getItem('username');
-    if (storedUsername) {
-      setUsername(storedUsername);
+    const username = localStorage.getItem('username');
+    if (username !== null) {
+      setUsername(username as string);
     }
   }, []);
 
@@ -30,21 +23,6 @@ export default function ClientSessionLobby() {
           <Link href="/">Back</Link>
         </CardHeader>
         <CardBody className="flex items-center">
-          {username === '' ? (
-            <>
-              <h1>Welcome to session room: {sessionCode}</h1>
-              <form
-                onSubmit={handleSubmitUsername}
-                className="flex flex-col justify-center"
-              >
-                <label>Please enter your name to join:</label>
-                <input type="text" name="username" />
-                <Button type="submit" color="primary" variant="solid">
-                  Submit
-                </Button>
-              </form>
-            </>
-          ) : (
             <>
               <h1>
                 Hello {username}! Welcome to session room: {sessionCode}
@@ -67,7 +45,6 @@ export default function ClientSessionLobby() {
                 </Button>
               )}
             </>
-          )}
         </CardBody>
       </Card>
     </>
