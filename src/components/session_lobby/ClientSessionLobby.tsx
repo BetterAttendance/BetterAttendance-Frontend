@@ -19,6 +19,8 @@ export default function ClientSessionLobby() {
   }, []);
 
   useEffect(() => {
+    // We must use validationDone to prevent this code from running before the validation is done
+    // Preventing the code redirect the host to join page as he/she doesn't have a username
     if (validationDone) {
       const name = localStorage.getItem('username');
       if (name == null) {
@@ -33,7 +35,8 @@ export default function ClientSessionLobby() {
     <>
       <>
         <h1>
-          Hello {username}! Welcome to session room: {sessionCode}
+          {/* We only want to display the welcome portion when the username is available */}
+          {username && (<>Hello {username}! </>)}Welcome to session room: {sessionCode}
         </h1>
         <h2 className="pb-5">Please wait until the host start the quiz</h2>
         {isQuizStarted ? (

@@ -8,12 +8,14 @@ import { useSocket } from '@/context/socket.context';
 import { useEffect, useState } from 'react';
 import EVENTS from '@/config/events';
 import { useUser } from '@/context/user.context';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
+
 
 export default function Page() {
   const { socket } = useSocket();
   const [ isHost, setIsHost ] = useState(false);
   const { generateNewUserId, setValidationDone } = useUser();
+  const router = useRouter();
 
   // Use useParams hook to get sessionCode parameters
   // Synchonize problem if we use sessionCode from useSocket
@@ -58,7 +60,7 @@ export default function Page() {
       checkIfHost(userId, sessionCode.toString());
     } else {
       console.error('User ID or session code not found. Redirecting to join page.');
-      window.location.href = '/join';
+      router.push('/join');
     }
   }, [socket]);
 
