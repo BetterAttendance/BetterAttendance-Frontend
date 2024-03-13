@@ -33,35 +33,61 @@ export default function Page() {
     }
   }
 
-  useEffect(() => {
-    const userId = localStorage.getItem('userId');
+  const isCodeValid = (sessionCode: string) => {
+    return new Promise((resolve, reject) => {
+      if (socket) {
+        socket.emit(EVENTS.CLIENT.VALIDATE_SESSION, { sessionCode });
+        socket.on(EVENTS.SERVER.VALIDATE_SESSION, (data: { isValid: boolean }) => {
+          resolve(data.isValid);
+        });
+      } else {
+        reject(new Error("Socket connection is not available"));
+      }
+    });
+  }
 
-    if (!userId) {
-      generateNewUserId();
-    } else {
-      console.log('User already has a userId.');
-    }
-
-    if (userId && sessionCode) {
-      // TypeScript will complain if we don't convert sessionCode to string
-      checkIfHost(userId, sessionCode.toString());
-
-    // TODO: Add server session code validation
-
-    }
-  }, []);  
-
+  // This will run for the first time and when the user refresh the page
   // In case the user refresh the page, we need to check if the user is host again
   useEffect(() => {
-    const userId = localStorage.getItem('userId');
+    // We use async function to be able to use await to wait for the response from the server
+    // If we don't use async, the code will continue to run without waiting for the response
+    const checkSessionValidity = async () => {
+      // We only want to run the code if the socket is available
+      if (!socket) {
+        console.error('Socket connection is not available yet.');
+        return;
+      }
 
-    if (userId && sessionCode) {
-      // TypeScript will complain if we don't convert sessionCode to string
-      checkIfHost(userId, sessionCode.toString());
-    } else {
-      console.error('User ID or session code not found. Redirecting to join page.');
-      router.push('/join');
-    }
+      try {
+        const isValid = await isCodeValid(sessionCode.toString());
+        if (isValid) {
+          const userId = localStorage.getItem('userId');
+          if (!userId) {
+            generateNewUserId();
+          } else {
+            console.log('User already has a userId.');
+          }
+  
+          if (userId && sessionCode) {
+            // TypeScript will complain if we don't convert sessionCode to string
+            checkIfHost(userId, sessionCode.toString());
+          } else {
+            window.alert('User ID or session code not found. Redirecting to join page.');
+            router.push('/join');
+          }
+        } else {
+          console.error('Session code is invalid.')
+          window.alert('Session code is invalid. Redirecting to join page.');
+          router.push('/join');
+        }
+      } catch (error) {
+        console.error("Error validating session code:", error);
+        window.alert('An error occurred while validating the session code. Redirecting to join page.');
+        router.push('/join');
+      }
+    };
+  
+    checkSessionValidity();
   }, [socket]);
 
   return (
