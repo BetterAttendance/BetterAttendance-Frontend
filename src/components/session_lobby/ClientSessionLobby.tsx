@@ -1,16 +1,18 @@
-import { useState, useEffect, use } from "react";
-import { Button } from "@nextui-org/react";
-import { useParams } from "next/navigation";
-import { useUser } from "@/context/user.context";
+import { useState, useEffect, use } from 'react';
+import { Button } from '@nextui-org/react';
+import { useParams } from 'next/navigation';
+import { useUser } from '@/context/user.context';
+import { useRouter } from 'next/navigation';
 
 export default function ClientSessionLobby() {
-  const [username, setUsername] = useState<string>("");
+  const router = useRouter();
+  const [username, setUsername] = useState<string>('');
   const [isQuizStarted, setIsQuizStarted] = useState<boolean>(false);
   const { sessionCode } = useParams();
   const { validationDone } = useUser();
 
   useEffect(() => {
-    const name = localStorage.getItem("username");
+    const name = localStorage.getItem('username');
     if (name !== null) {
       setUsername(name as string);
     }
@@ -18,14 +20,14 @@ export default function ClientSessionLobby() {
 
   useEffect(() => {
     if (validationDone) {
-      const name = localStorage.getItem("username");
+      const name = localStorage.getItem('username');
       if (name == null) {
         // No toast alert here because we want to disable the content
-        window.alert("Username missing. Redirecting to join page.");
-        window.location.href = "/join";
+        window.alert('Username missing. Redirecting to join page.');
+        router.push(`/join?session=${sessionCode}`);
       }
     }
-  }, [validationDone]);
+  }, [validationDone, sessionCode, router]);
 
   return (
     <>

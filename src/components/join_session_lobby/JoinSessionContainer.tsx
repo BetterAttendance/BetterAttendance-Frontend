@@ -14,12 +14,20 @@ import { IoCopy } from 'react-icons/io5';
 import { nanoid } from 'nanoid';
 import toast, { Toaster } from 'react-hot-toast';
 import { useSocket } from '@/context/socket.context';
+import { useSearchParams } from 'next/navigation';
 
 export default function JoinSessionContainer() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [username, setUsername] = useState<string>('');
   const [sessionCodeInput, setSessionCodeInput] = useState<string>('');
-  const { sessionCode, setSessionCode } = useSocket();
+  const { setSessionCode } = useSocket();
+
+  useEffect(() => {
+    if ((searchParams.get('session') as string) !== '') {
+      setSessionCodeInput(searchParams.get('session') as string);
+    }
+  }, [searchParams]);
 
   const validateSessionCode = (sessionCode: string) =>
     sessionCode.match(/^[A-Za-z0-9]{5}$/i); // 5 digits alphanumeric
