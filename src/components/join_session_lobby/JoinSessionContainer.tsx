@@ -29,8 +29,13 @@ export default function JoinSessionContainer() {
     }
   }, [searchParams]);
 
-  const validateSessionCode = (sessionCode: string) =>
-    sessionCode.match(/^[A-Za-z0-9]{5}$/i); // 5 digits alphanumeric
+  const validateSessionCode = (sessionCode: string) => {
+    if (sessionCode === null) {
+      sessionCode = '';
+    }
+
+    return sessionCode.match(/^[A-Za-z0-9]{5}$/i); // 5 digits alphanumeric
+  };
 
   const isInvalid = useMemo(() => {
     if (sessionCodeInput === '') return true;
