@@ -3,9 +3,11 @@
 import { QRCodeCanvas } from 'qrcode.react';
 import { useSocket } from '@/context/socket.context';
 import { Button } from '@nextui-org/react';
+import { useParams } from 'next/navigation';
 
 export default function SessionLobby() {
-  const { socket, sessionCode } = useSocket();
+  const { socket } = useSocket();
+  const { sessionCode } = useParams();
 
   const handleStartQuiz = () => {
     // ToDo: Emit event to start the quiz
