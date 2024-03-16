@@ -53,11 +53,6 @@ export default function Page() {
     // If we don't use async, the code will continue to run without waiting for the response
     const checkSessionValidity = async () => {
       // We only want to run the code if the socket is available
-      if (!socket) {
-        console.error('Socket connection is not available yet.');
-        return;
-      }
-
       try {
         const isValid = await isCodeValid(sessionCode.toString());
         if (isValid) {
@@ -67,8 +62,8 @@ export default function Page() {
           } else {
             console.log('User already has a userId.');
           }
-  
-          if (userId && sessionCode) {
+
+         if (userId && sessionCode) {
             // TypeScript will complain if we don't convert sessionCode to string
             checkIfHost(userId, sessionCode.toString());
           } else {
@@ -85,10 +80,21 @@ export default function Page() {
         window.alert('An error occurred while validating the session code. Redirecting to join page.');
         router.push('/join');
       }
+    }
+
+    if (sessionCode) {
+      checkSessionValidity();
+    }
+
+    // We need to clean up the event listener when the component is unmounted
+    // Otherwise, the event listener will be added multiple times
+    return () => {
+      if (socket) {
+        socket.off(EVENTS.SERVER.VALIDATE_SESSION);
+        socket.off(EVENTS.SERVER.CHECK_IF_HOST);
+      }
     };
-  
-    checkSessionValidity();
-  }, [socket]);
+  }, []);
 
   return (
     <>
