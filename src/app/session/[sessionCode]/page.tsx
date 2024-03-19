@@ -1,6 +1,6 @@
 'use client';
 
-import SessionLobby from '@/components/session_lobby/SessionLobby';
+import SessionLobby from '@/components/session_lobby/HostSessionLobby';
 import ClientSessionLobby from '@/components/session_lobby/ClientSessionLobby';
 import { Card, CardBody, CardHeader } from '@nextui-org/react';
 import QuitSessionButton from '@/components/session_lobby/QuitSessionButton';
@@ -10,10 +10,9 @@ import EVENTS from '@/config/events';
 import { useUser } from '@/context/user.context';
 import { useParams, useRouter } from 'next/navigation';
 
-
 export default function Page() {
   const { socket } = useSocket();
-  const [ isHost, setIsHost ] = useState(false);
+  const [isHost, setIsHost] = useState(false);
   const { generateNewUserId, setValidationDone } = useUser();
   const router = useRouter();
 
@@ -31,20 +30,23 @@ export default function Page() {
         setValidationDone(true);
       });
     }
-  }
+  };
 
   const isCodeValid = (sessionCode: string) => {
     return new Promise((resolve, reject) => {
       if (socket) {
         socket.emit(EVENTS.CLIENT.VALIDATE_SESSION, { sessionCode });
-        socket.on(EVENTS.SERVER.VALIDATE_SESSION, (data: { isValid: boolean }) => {
-          resolve(data.isValid);
-        });
+        socket.on(
+          EVENTS.SERVER.VALIDATE_SESSION,
+          (data: { isValid: boolean }) => {
+            resolve(data.isValid);
+          }
+        );
       } else {
-        reject(new Error("Socket connection is not available"));
+        reject(new Error('Socket connection is not available'));
       }
     });
-  }
+  };
 
   // This will run for the first time and when the user refresh the page
   // In case the user refresh the page, we need to check if the user is host again
@@ -63,24 +65,28 @@ export default function Page() {
             console.log('User already has a userId.');
           }
 
-         if (userId && sessionCode) {
+          if (userId && sessionCode) {
             // TypeScript will complain if we don't convert sessionCode to string
             checkIfHost(userId, sessionCode.toString());
           } else {
-            window.alert('User ID or session code not found. Redirecting to join page.');
+            window.alert(
+              'User ID or session code not found. Redirecting to join page.'
+            );
             router.push('/join');
           }
         } else {
-          console.error('Session code is invalid.')
+          console.error('Session code is invalid.');
           window.alert('Session code is invalid. Redirecting to join page.');
           router.push('/join');
         }
       } catch (error) {
-        console.error("Error validating session code:", error);
-        window.alert('An error occurred while validating the session code. Redirecting to join page.');
+        console.error('Error validating session code:', error);
+        window.alert(
+          'An error occurred while validating the session code. Redirecting to join page.'
+        );
         router.push('/join');
       }
-    }
+    };
 
     if (sessionCode) {
       checkSessionValidity();
