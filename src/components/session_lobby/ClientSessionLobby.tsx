@@ -1,5 +1,5 @@
 import { useState, useEffect, use } from 'react';
-import { Button } from '@nextui-org/react';
+import { Button, Spinner } from '@nextui-org/react';
 import { useParams } from 'next/navigation';
 import { useUser } from '@/context/user.context';
 import { useRouter } from 'next/navigation';
@@ -24,8 +24,6 @@ export default function ClientSessionLobby() {
     if (validationDone) {
       const name = localStorage.getItem('username');
       if (name == null || name === '') {
-        // No toast alert here because we want to disable the content
-        window.alert('Username missing. Redirecting to join page.');
         router.push(`/join?session=${sessionCode}`);
       }
     }
@@ -33,22 +31,13 @@ export default function ClientSessionLobby() {
 
   return (
     <>
-      <>
-        <h1>
-          {/* We only want to display the welcome portion when the username is available */}
-          {username && (<>Hello {username}! </>)}Welcome to session room: {sessionCode}
-        </h1>
-        <h2 className="pb-5">Please wait until the host start the quiz</h2>
-        {isQuizStarted ? (
-          <Button type="submit" color="primary" variant="solid">
-            Join Quiz
-          </Button>
-        ) : (
-          <Button type="submit" color="primary" variant="solid" isDisabled>
-            Join Quiz
-          </Button>
-        )}
-      </>
+      <h1>
+        {/* We only want to display the welcome portion when the username is available */}
+        {username && <>Hello {username}! </>}Welcome to session room:{' '}
+        {sessionCode}
+      </h1>
+      <h2 className="pb-5">Please wait until the host start the quiz</h2>
+      {isQuizStarted ? <p>Boo!</p> : <Spinner />}
     </>
   );
 }
