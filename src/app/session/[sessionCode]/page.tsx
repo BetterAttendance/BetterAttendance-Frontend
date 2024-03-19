@@ -3,7 +3,7 @@
 import SessionLobby from '@/components/session_lobby/HostSessionLobby';
 import ClientSessionLobby from '@/components/session_lobby/ClientSessionLobby';
 import { Card, CardBody, CardHeader } from '@nextui-org/react';
-import QuitSessionButton from '@/components/session_lobby/QuitSessionButton';
+import QuitSessionButton from '@/components/session_lobby/HostQuitSessionButton';
 import { useSocket } from '@/context/socket.context';
 import { useEffect, useState } from 'react';
 import EVENTS from '@/config/events';
