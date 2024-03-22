@@ -57,28 +57,31 @@ export default function Page() {
       // We only want to run the code if the socket is available
       try {
         const isValid = await isCodeValid(sessionCode.toString());
-        if (isValid) {
-          const userId = localStorage.getItem('userId');
-          if (!userId) {
-            generateNewUserId();
-          } else {
-            console.log('User already has a userId.');
-          }
-
-          if (userId && sessionCode) {
-            // TypeScript will complain if we don't convert sessionCode to string
-            checkIfHost(userId, sessionCode.toString());
-          } else {
-            window.alert(
-              'User ID or session code not found. Redirecting to join page.'
-            );
-            router.push('/join');
-          }
-        } else {
+    
+        // If the session code is invalid, we redirect the user to the join page
+        if (!isValid) {
           console.error('Session code is invalid.');
           window.alert('Session code is invalid. Redirecting to join page.');
           router.push('/join');
+          return;
         }
+    
+        const userId = localStorage.getItem('userId');
+        if (!userId) {
+          generateNewUserId();
+        } else {
+          console.log('User already has a userId.');
+        }
+    
+        // TypeScript will complain userID is possibly null, so we need to constantly check if it's null
+        if (!userId ||!sessionCode) {
+          window.alert('User ID or session code not found. Redirecting to join page.');
+          router.push('/join');
+          return;
+        }
+    
+        // TypeScript will complain if we don't convert sessionCode to string
+        checkIfHost(userId, sessionCode.toString());
       } catch (error) {
         console.error('Error validating session code:', error);
         window.alert(
