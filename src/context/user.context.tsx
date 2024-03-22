@@ -23,16 +23,6 @@ const UserProvider = (props: any) => {
     console.log("New userId is generated.");
   };
 
-  useEffect(() => {
-    const userId = localStorage.getItem("userId");
-
-    if (!userId) {
-      generateNewUserId();
-    } else {
-      console.log("User already has a userId.");
-    }
-  }, []); // Only call once in session page
-
   const ContextValue = {
     generateNewUserId,
     validationDone,
