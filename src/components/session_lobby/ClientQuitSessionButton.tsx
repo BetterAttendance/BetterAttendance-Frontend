@@ -10,7 +10,7 @@ import {
 } from '@nextui-org/react';
 import { FaAngleLeft } from 'react-icons/fa6';
 
-export default function HostQuitSessionButton() {
+export default function ClientQuitSessionButton() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const handleQuitSession = () => {
     // TODO: Handle quit session
@@ -31,12 +31,6 @@ export default function HostQuitSessionButton() {
               <ModalHeader className="flex flex-col gap-1">
                 Are you sure you want to quit the session?
               </ModalHeader>
-              <ModalBody>
-                <p className="text-sm">
-                  Quitting the session will disconnect all attendees and you
-                  will lose your current session.
-                </p>
-              </ModalBody>
               <ModalFooter>
                 <Button color="danger" variant="light" onPress={onClose}>
                   Cancel

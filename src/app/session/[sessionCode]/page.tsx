@@ -1,14 +1,15 @@
 'use client';
 
-import SessionLobby from '@/components/session_lobby/HostSessionLobby';
+import HostSessionLobby from '@/components/session_lobby/HostSessionLobby';
 import ClientSessionLobby from '@/components/session_lobby/ClientSessionLobby';
 import { Card, CardBody, CardHeader } from '@nextui-org/react';
-import QuitSessionButton from '@/components/session_lobby/HostQuitSessionButton';
+import HostQuitSessionButton from '@/components/session_lobby/HostQuitSessionButton';
 import { useSocket } from '@/context/socket.context';
 import { useEffect, useState } from 'react';
 import EVENTS from '@/config/events';
 import { useUser } from '@/context/user.context';
 import { useParams, useRouter } from 'next/navigation';
+import ClientQuitSessionButton from '@/components/session_lobby/ClientQuitSessionButton';
 
 export default function Page() {
   const { socket } = useSocket();
@@ -57,31 +58,18 @@ export default function Page() {
       // We only want to run the code if the socket is available
       try {
         const isValid = await isCodeValid(sessionCode.toString());
-    
-        // If the session code is invalid, we redirect the user to the join page
+
         if (!isValid) {
-          console.error('Session code is invalid.');
           window.alert('Session code is invalid. Redirecting to join page.');
           router.push('/join');
           return;
         }
-    
+
         const userId = localStorage.getItem('userId');
-        if (!userId) {
-          generateNewUserId();
-        } else {
-          console.log('User already has a userId.');
+
+        if (userId) {
+          checkIfHost(userId, sessionCode.toString());
         }
-    
-        // TypeScript will complain userID is possibly null, so we need to constantly check if it's null
-        if (!userId ||!sessionCode) {
-          window.alert('User ID or session code not found. Redirecting to join page.');
-          router.push('/join');
-          return;
-        }
-    
-        // TypeScript will complain if we don't convert sessionCode to string
-        checkIfHost(userId, sessionCode.toString());
       } catch (error) {
         console.error('Error validating session code:', error);
         window.alert(
@@ -109,10 +97,10 @@ export default function Page() {
     <>
       <Card className="p-5">
         <CardHeader>
-          <QuitSessionButton />
+          {isHost ? <HostQuitSessionButton /> : <ClientQuitSessionButton />}
         </CardHeader>
         <CardBody className="flex items-center">
-          {isHost ? <SessionLobby /> : <ClientSessionLobby />}
+          {isHost ? <HostSessionLobby /> : <ClientSessionLobby />}
         </CardBody>
       </Card>
     </>

@@ -1,12 +1,10 @@
 'use client';
 
 import { QRCodeCanvas } from 'qrcode.react';
-import { useSocket } from '@/context/socket.context';
 import { Button } from '@nextui-org/react';
 import { useParams } from 'next/navigation';
 
-export default function SessionLobby() {
-  const { socket } = useSocket();
+export default function HostSessionLobby() {
   const { sessionCode } = useParams();
 
   const handleStartQuiz = () => {

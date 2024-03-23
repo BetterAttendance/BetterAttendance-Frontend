@@ -1,5 +1,5 @@
-import { useState, useEffect, use } from 'react';
-import { Button, Spinner } from '@nextui-org/react';
+import { useState, useEffect } from 'react';
+import { Spinner } from '@nextui-org/react';
 import { useParams } from 'next/navigation';
 import { useUser } from '@/context/user.context';
 import { useRouter } from 'next/navigation';
