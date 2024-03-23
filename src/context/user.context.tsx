@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { useContext, createContext, useEffect, useState } from "react";
-import { nanoid } from "nanoid";
+import { useContext, createContext, useEffect, useState } from 'react';
+import { nanoid } from 'nanoid';
 
 interface UserContextType {
   generateNewUserId: () => void;
@@ -19,9 +19,14 @@ const UserProvider = (props: any) => {
   const [validationDone, setValidationDone] = useState<boolean>(false);
 
   const generateNewUserId = () => {
-    localStorage.setItem("userId", nanoid());
-    console.log("New userId is generated.");
+    localStorage.setItem('userId', nanoid());
   };
+
+  useEffect(() => {
+    if (!localStorage.getItem('userId')) {
+      generateNewUserId();
+    }
+  }, []);
 
   const ContextValue = {
     generateNewUserId,
