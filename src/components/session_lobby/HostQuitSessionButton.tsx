@@ -9,14 +9,23 @@ import {
   Link,
 } from '@nextui-org/react';
 import { FaAngleLeft } from 'react-icons/fa6';
+import { useSocket } from '../../context/socket.context';
+import EVENTS from '@/config/events';
+import { useParams } from 'next/navigation';
 
 export default function HostQuitSessionButton() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const { socket } = useSocket();
+  const { sessionCode } = useParams();
+
   const handleQuitSession = () => {
     // TODO: Handle quit session
     // 1. Disconnect all users in session
     // 2. Delete/remove the session
-    console.log('Quitting session... TODO');
+    socket.emit(EVENTS.CLIENT.HOST_QUIT_SESSION, {
+      sessionCode: sessionCode,
+      userId: localStorage.getItem('userId'),
+    });
   };
 
   return (

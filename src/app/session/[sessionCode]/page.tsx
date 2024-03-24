@@ -14,7 +14,7 @@ import ClientQuitSessionButton from '@/components/session_lobby/ClientQuitSessio
 export default function Page() {
   const { socket } = useSocket();
   const [isHost, setIsHost] = useState(false);
-  const { generateNewUserId, setValidationDone } = useUser();
+  const { setValidationDone } = useUser();
   const router = useRouter();
 
   // Use useParams hook to get sessionCode parameters
