@@ -10,6 +10,7 @@ import EVENTS from '@/config/events';
 import { useUser } from '@/context/user.context';
 import { useParams, useRouter } from 'next/navigation';
 import ClientQuitSessionButton from '@/components/session_lobby/ClientQuitSessionButton';
+import CONFIG from '@/config/global.config';
 
 export default function Page() {
   const { socket } = useSocket();
@@ -22,30 +23,44 @@ export default function Page() {
   const { sessionCode } = useParams();
 
   const checkIfHost = (userID: string, sessionCode: string) => {
-    if (socket) {
-      console.log(`Checking if user is host of session: ${sessionCode}`);
-      socket.emit(EVENTS.CLIENT.CHECK_IF_HOST, { userID, sessionCode });
-      socket.on(EVENTS.SERVER.CHECK_IF_HOST, (data: { isHost: boolean }) => {
-        setIsHost(data.isHost);
-        console.log('User is host:', data.isHost);
-        setValidationDone(true);
-      });
+    if (!socket) {
+      return;
     }
+
+    if (CONFIG.DEBUG) {
+      console.log(
+        `[checkIfHost] Checking if user is host of session: ${sessionCode}`
+      );
+    }
+
+    socket.emit(EVENTS.CLIENT.CHECK_IF_HOST, { userID, sessionCode });
+    socket.on(EVENTS.SERVER.CHECK_IF_HOST, (data: { isHost: boolean }) => {
+      setIsHost(data.isHost);
+      setValidationDone(true);
+
+      if (CONFIG.DEBUG) {
+        console.log('[S_CHECK_IF_HOST] User is host:', data.isHost);
+      }
+    });
   };
 
   const isCodeValid = (sessionCode: string) => {
     return new Promise((resolve, reject) => {
-      if (socket) {
-        socket.emit(EVENTS.CLIENT.VALIDATE_SESSION, { sessionCode });
-        socket.on(
-          EVENTS.SERVER.VALIDATE_SESSION,
-          (data: { isValid: boolean }) => {
-            resolve(data.isValid);
-          }
-        );
-      } else {
+      if (!socket) {
         reject(new Error('Socket connection is not available'));
       }
+
+      if (CONFIG.DEBUG) {
+        console.log(`[isCodeValid] Checking session is valid: ${sessionCode}`);
+      }
+
+      socket.emit(EVENTS.CLIENT.VALIDATE_SESSION, { sessionCode });
+      socket.on(
+        EVENTS.SERVER.VALIDATE_SESSION,
+        (data: { isValid: boolean }) => {
+          resolve(data.isValid);
+        }
+      );
     });
   };
 
@@ -86,10 +101,12 @@ export default function Page() {
     // We need to clean up the event listener when the component is unmounted
     // Otherwise, the event listener will be added multiple times
     return () => {
-      if (socket) {
-        socket.off(EVENTS.SERVER.VALIDATE_SESSION);
-        socket.off(EVENTS.SERVER.CHECK_IF_HOST);
+      if (!socket) {
+        return;
       }
+
+      socket.off(EVENTS.SERVER.VALIDATE_SESSION);
+      socket.off(EVENTS.SERVER.CHECK_IF_HOST);
     };
   }, []);
 

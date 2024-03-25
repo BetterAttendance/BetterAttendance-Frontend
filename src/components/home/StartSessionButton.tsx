@@ -13,14 +13,16 @@ export default function StartSessionButton() {
   const { generateNewUserId } = useUser();
 
   const handleStartButton = () => {
-    if (socket) {
-      const userID = localStorage.getItem('userId');
-      if (!userID) {
-        generateNewUserId();
-      }
-
-      socket.emit(EVENTS.CLIENT.CREATE_SESSION, { host_id: userID });
+    if (!socket) {
+      return;
     }
+
+    const userID = localStorage.getItem('userId');
+    if (!userID) {
+      generateNewUserId();
+    }
+
+    socket.emit(EVENTS.CLIENT.CREATE_SESSION, { host_id: userID });
   };
 
   useEffect(() => {
