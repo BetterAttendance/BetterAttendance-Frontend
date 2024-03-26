@@ -9,7 +9,7 @@ import {
 } from '@nextui-org/react';
 import { FaAngleLeft } from 'react-icons/fa6';
 
-export default function ClientQuitSessionButton() {
+export default function AttendeeQuitSessionButton() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const handleQuitSession = () => {
     // TODO: Handle quit session

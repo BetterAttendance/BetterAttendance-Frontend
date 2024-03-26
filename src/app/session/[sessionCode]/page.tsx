@@ -1,7 +1,6 @@
 'use client';
 
 import HostSessionLobby from '@/components/session_lobby/HostSessionLobby';
-import ClientSessionLobby from '@/components/session_lobby/ClientSessionLobby';
 import { Card, CardBody, CardHeader } from '@nextui-org/react';
 import HostQuitSessionButton from '@/components/session_lobby/HostQuitSessionButton';
 import { useSocket } from '@/context/socket.context';
@@ -9,8 +8,9 @@ import { useEffect, useState } from 'react';
 import EVENTS from '@/config/events';
 import { useUser } from '@/context/user.context';
 import { useParams, useRouter } from 'next/navigation';
-import ClientQuitSessionButton from '@/components/session_lobby/ClientQuitSessionButton';
+import AttendeeQuitSessionButton from '@/components/session_lobby/AttendeeQuitSessionButton';
 import CONFIG from '@/config/global.config';
+import AttendeeSessionLobby from '@/components/session_lobby/AttendeeSessionLobby';
 
 export default function Page() {
   const { socket } = useSocket();
@@ -123,10 +123,10 @@ export default function Page() {
     <>
       <Card className="p-5">
         <CardHeader>
-          {isHost ? <HostQuitSessionButton /> : <ClientQuitSessionButton />}
+          {isHost ? <HostQuitSessionButton /> : <AttendeeQuitSessionButton />}
         </CardHeader>
         <CardBody className="flex items-center">
-          {isHost ? <HostSessionLobby /> : <ClientSessionLobby />}
+          {isHost ? <HostSessionLobby /> : <AttendeeSessionLobby />}
         </CardBody>
       </Card>
     </>

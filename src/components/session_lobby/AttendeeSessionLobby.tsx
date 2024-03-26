@@ -5,7 +5,7 @@ import { useUser } from '@/context/user.context';
 import { useRouter } from 'next/navigation';
 import { useSocket } from '@/context/socket.context';
 
-export default function ClientSessionLobby() {
+export default function AttendeeSessionLobby() {
   const router = useRouter();
   const [username, setUsername] = useState<string>('');
   const [isQuizStarted, setIsQuizStarted] = useState<boolean>(false);
