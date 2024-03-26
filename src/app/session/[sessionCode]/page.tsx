@@ -81,9 +81,18 @@ export default function Page() {
         }
 
         const userId = localStorage.getItem('userId');
+        const username = localStorage.getItem('username');
 
         if (userId) {
           checkIfHost(userId, sessionCode.toString());
+        }
+
+        if (!isHost && username) {
+          socket.emit(EVENTS.CLIENT.JOIN_SESSION, {
+            userId: userId,
+            sessionCode: sessionCode.toString(),
+            username: username,
+          });
         }
       } catch (error) {
         console.error('Error validating session code:', error);

@@ -10,6 +10,7 @@ interface Context {
   socket: Socket;
   sessionCode: string;
   setSessionCode: (sessionCode: string) => void; // Exported function
+  usersConnected: Number;
 }
 
 const socket = io(SOCKET_CONFIG.SOCKET_URL, {
@@ -22,16 +23,21 @@ const SocketContext = createContext<Context>({
   socket,
   sessionCode: '',
   setSessionCode: () => {},
+  usersConnected: 0,
 });
 
 const SocketsProvider = (props: any) => {
   const [sessionCode, setSessionCode] = useState<string>('');
+  const [usersConnected, setUsersConnected] = useState<Number>(0);
 
   socket.on(EVENTS.SERVER.JOIN_SESSION, ({ sessionCode }) => {
     setSessionCode(sessionCode);
 
     if (CONFIG.DEBUG) {
-      console.log('[JOIN_SESSION] Setting sessionCode: ', sessionCode);
+      console.log(
+        '[JOIN_SESSION] Client has joined sessionCode: ',
+        sessionCode
+      );
     }
   });
 
@@ -43,9 +49,13 @@ const SocketsProvider = (props: any) => {
     }
   });
 
+  socket.on(EVENTS.UPDATE_USERS, ({ usersConnected }) => {
+    setUsersConnected(usersConnected);
+  });
+
   return (
     <SocketContext.Provider
-      value={{ socket, sessionCode, setSessionCode }}
+      value={{ socket, sessionCode, setSessionCode, usersConnected }}
       {...props}
     />
   );

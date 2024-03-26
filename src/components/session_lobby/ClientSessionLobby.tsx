@@ -3,6 +3,7 @@ import { Spinner } from '@nextui-org/react';
 import { useParams } from 'next/navigation';
 import { useUser } from '@/context/user.context';
 import { useRouter } from 'next/navigation';
+import { useSocket } from '@/context/socket.context';
 
 export default function ClientSessionLobby() {
   const router = useRouter();
@@ -10,6 +11,7 @@ export default function ClientSessionLobby() {
   const [isQuizStarted, setIsQuizStarted] = useState<boolean>(false);
   const { sessionCode } = useParams();
   const { validationDone } = useUser();
+  const { usersConnected } = useSocket();
 
   useEffect(() => {
     const name = localStorage.getItem('username');
@@ -38,6 +40,7 @@ export default function ClientSessionLobby() {
       </h1>
       <h2 className="pb-5">Please wait until the host start the quiz</h2>
       {isQuizStarted ? <p>Boo!</p> : <Spinner />}
+      <h2>Users connected: {usersConnected.toString()}</h2>
     </>
   );
 }
