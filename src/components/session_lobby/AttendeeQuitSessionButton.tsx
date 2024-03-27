@@ -1,3 +1,5 @@
+import EVENTS from '@/config/events';
+import { useSocket } from '@/context/socket.context';
 import {
   Modal,
   ModalContent,
@@ -11,11 +13,13 @@ import { FaAngleLeft } from 'react-icons/fa6';
 
 export default function AttendeeQuitSessionButton() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const { socket, sessionCode } = useSocket();
+
   const handleQuitSession = () => {
-    // TODO: Handle quit session
-    // 1. Disconnect all users in session
-    // 2. Delete/remove the session
-    console.log('Quitting session... TODO');
+    socket.emit(EVENTS.CLIENT.ATTENDEE_QUIT_SESSION, {
+      sessionCode: sessionCode,
+      userId: localStorage.getItem('userId'),
+    });
   };
 
   return (
