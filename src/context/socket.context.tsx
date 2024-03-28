@@ -53,6 +53,10 @@ const SocketsProvider = (props: any) => {
     setUsersConnected(usersConnected);
   });
 
+  socket.on(EVENTS.DISCONNECT_USERS, () => {
+    // TODO
+  });
+
   return (
     <SocketContext.Provider
       value={{ socket, sessionCode, setSessionCode, usersConnected }}
